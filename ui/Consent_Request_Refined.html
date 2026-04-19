@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#adc6ff",
+                    "surface-bright": "#faf8ff",
+                    "on-primary-container": "#fffbff",
+                    "on-surface-variant": "#464554",
+                    "outline": "#767586",
+                    "on-secondary-container": "#fefcff",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-secondary": "#ffffff",
+                    "background": "#faf8ff",
+                    "surface-container-low": "#f2f3ff",
+                    "surface-container-high": "#e2e7ff",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "surface-variant": "#dae2fd",
+                    "tertiary": "#8127cf",
+                    "on-tertiary-fixed": "#2c0051",
+                    "on-secondary-fixed": "#001a42",
+                    "primary-fixed": "#e1e0ff",
+                    "error-container": "#ffdad6",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#f0dbff",
+                    "primary": "#4648d4",
+                    "outline-variant": "#c7c4d7",
+                    "inverse-surface": "#283044",
+                    "surface-container": "#eaedff",
+                    "tertiary-container": "#9c48ea",
+                    "inverse-primary": "#c0c1ff",
+                    "surface-dim": "#d2d9f4",
+                    "inverse-on-surface": "#eef0ff",
+                    "secondary-container": "#2170e4",
+                    "surface-container-highest": "#dae2fd",
+                    "surface": "#faf8ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "surface-tint": "#494bd6",
+                    "on-tertiary-fixed-variant": "#6900b3",
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-background": "#131b2e",
+                    "on-tertiary-container": "#fffbff",
+                    "secondary": "#0058be",
+                    "primary-container": "#6063ee",
+                    "on-primary-fixed": "#07006c",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed-dim": "#ddb7ff",
+                    "on-surface": "#131b2e",
+                    "error": "#ba1a1a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .power-gradient {
+            background: linear-gradient(45deg, #4648d4, #8127cf);
+        }
+        .trust-ring {
+            background: conic-gradient(#4648d4 87%, #e2e7ff 0);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-[#faf8ff]/80 dark:bg-slate-950/80 backdrop-blur-xl docked full-width top-0 sticky z-50 no-border bg-gradient-to-b from-[#f2f3ff] to-transparent dark:from-slate-900 shadow-none">
+<div class="flex justify-between items-center w-full px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a professional man with a friendly expression in a modern bright setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzJgSkbhuH-N-8apycAsH0xekbHxUbjGXHAzfG-clzW5mzYe4JfIrFSYajuWij-gYeY_-LjKgfZUuBls89DBF1THtvlY-ZgxMPHQSHBTtK2LoBcQOC-dLD9NYJ1dd21rbCzWe82CJjymvw8QjEWdzKMb6llYzYKTNQh_9Yc1eW4jV0QGiwPchPnDsZ-WOdXnlJmjqpiFO_OGlhwdDEUpVxomCIGnA8F6SfYpwiOvNqK3ia2nZJaQJB3RCydS844_DaNCVCxiFAgCej"/>
+</div>
+<span class="text-xl font-extrabold tracking-tighter text-[#4648d4] dark:text-[#6366F1]">PRISM</span>
+</div>
+<div class="hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined text-[#4648d4] dark:text-[#6366F1]">verified_user</span>
+</div>
+</div>
+</header>
+<main class="px-6 pt-4 max-w-md mx-auto">
+<!-- Consent Context Section -->
+<section class="mb-8">
+<h1 class="font-headline font-bold text-2xl tracking-tight text-on-surface mb-2">Consent Request</h1>
+<p class="text-on-surface-variant text-sm leading-relaxed">A third-party application is requesting temporary access to your digital vault identity.</p>
+</section>
+<!-- Requester Identity Card -->
+<div class="surface-container-low rounded-3xl p-6 mb-6 relative overflow-hidden">
+<div class="flex items-start justify-between relative z-10">
+<div class="flex gap-4">
+<div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm">
+<img class="w-10 h-10 object-contain" data-alt="Modern minimalist delivery truck logo in bright primary colors against a clean white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDD1SDxSeqfa9Wm6f7mLtIx3wRo1DAcEYVCVs356QlGoktDnShGmAAgFIo0N9zLJdrCK4mIX2eaKNz3fL33QO2H9wxzARMVLsOfi15b6X1EJKGfzhBHd6gW_CVX9Y9OjnzKLeJHMzUUEMZ4A0hEWCNncH0N_ZjVLyK46OgBp647GPOqrGVpvUYPFAqLGctoOfuLCqbhdARpRUMN-j1UQl4zM4Q60v55-dHYl_apu2vi1zKk9atObSJO5_dM7vOcSTl4UdabzRZqnSfJ"/>
+</div>
+<div>
+<h2 class="font-headline font-bold text-lg text-on-surface">FastKart Delivery</h2>
+<span class="text-xs font-semibold text-primary uppercase tracking-widest">Verified Requester</span>
+</div>
+</div>
+<!-- Trust Score Visual -->
+<div class="flex flex-col items-center">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full trust-ring opacity-20"></div>
+<div class="text-center">
+<span class="block font-headline font-extrabold text-primary text-sm">8.7</span>
+<span class="block text-[8px] uppercase font-bold text-on-surface-variant">Trust</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Glassmorphic Details Card -->
+<div class="glass-card surface-container-lowest rounded-[2.5rem] p-8 shadow-[0_8px_32px_rgba(70,72,212,0.08)] mb-8">
+<div class="space-y-8">
+<!-- Purpose Section -->
+<div>
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary text-xl">info</span>
+<h3 class="font-label font-bold text-xs uppercase tracking-widest text-on-surface-variant">Purpose</h3>
+</div>
+<p class="text-on-surface text-sm font-medium leading-relaxed">
+                        Access your location for real-time delivery tracking and driver navigation
+                    </p>
+</div>
+<!-- Data Requested -->
+<div>
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary text-xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<h3 class="font-label font-bold text-xs uppercase tracking-widest text-on-surface-variant">Data Requested</h3>
+</div>
+<div class="inline-flex items-center gap-2 px-3 py-2 bg-surface-container-high rounded-xl">
+<span class="text-sm font-bold text-primary">Location (Geo-Point)</span>
+</div>
+</div>
+<!-- Duration -->
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-xl">schedule</span>
+<span class="text-sm font-semibold text-on-surface">Consent Duration</span>
+</div>
+<span class="text-sm font-bold text-primary">7 days</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-4">
+<button class="power-gradient text-on-primary py-5 rounded-full font-headline font-bold text-lg shadow-[0_12px_24px_rgba(70,72,212,0.25)] hover:opacity-90 active:scale-[0.98] transition-all">
+                Allow
+            </button>
+<button class="bg-surface-container-highest text-on-secondary-fixed-variant py-5 rounded-full font-headline font-bold text-lg hover:bg-surface-container-high active:scale-[0.98] transition-all">
+                Deny
+            </button>
+</div>
+<!-- Security Footer Note -->
+<p class="mt-8 text-center text-xs text-on-surface-variant leading-loose px-4">
+            Your encryption keys remain private. PRISM ensures that FastKart only receives anonymized coordinates for the duration specified.
+        </p>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-8 bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl no-border shadow-[0_-10px_40px_-15px_rgba(70,72,212,0.15)] rounded-t-[2rem]">
+<div class="flex flex-col items-center justify-center text-[#464554] dark:text-slate-500 opacity-60 hover:opacity-100 transition-all tap-highlight-transparent active:scale-95 duration-300">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-['Inter'] text-[11px] font-semibold tracking-wide uppercase mt-1">Vault</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#464554] dark:text-slate-500 opacity-60 hover:opacity-100 transition-all tap-highlight-transparent active:scale-95 duration-300">
+<span class="material-symbols-outlined">fingerprint</span>
+<span class="font-['Inter'] text-[11px] font-semibold tracking-wide uppercase mt-1">Identity</span>
+</div>
+<!-- ACTIVE: Consent tab as we are on a consent request screen -->
+<div class="flex flex-col items-center justify-center text-[#4648d4] dark:text-[#6366F1] relative after:content-[''] after:absolute after:-bottom-1 after:w-1 after:h-1 after:bg-[#4648d4] after:rounded-full hover:opacity-100 transition-all tap-highlight-transparent active:scale-95 duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">fact_check</span>
+<span class="font-['Inter'] text-[11px] font-semibold tracking-wide uppercase mt-1">Consent</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#464554] dark:text-slate-500 opacity-60 hover:opacity-100 transition-all tap-highlight-transparent active:scale-95 duration-300">
+<span class="material-symbols-outlined">shield</span>
+<span class="font-['Inter'] text-[11px] font-semibold tracking-wide uppercase mt-1">Security</span>
+</div>
+</nav>
+</body></html>

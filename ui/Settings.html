@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-primary": "#c0c1ff",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "tertiary-fixed-dim": "#ddb7ff",
+                    "on-tertiary-fixed-variant": "#6900b3",
+                    "on-secondary-fixed-variant": "#004395",
+                    "secondary": "#0058be",
+                    "surface": "#faf8ff",
+                    "on-surface-variant": "#464554",
+                    "on-secondary": "#ffffff",
+                    "background": "#faf8ff",
+                    "on-surface": "#131b2e",
+                    "on-primary-container": "#fffbff",
+                    "tertiary-container": "#9c48ea",
+                    "on-background": "#131b2e",
+                    "surface-dim": "#d2d9f4",
+                    "surface-container": "#eaedff",
+                    "on-tertiary-fixed": "#2c0051",
+                    "primary-container": "#6063ee",
+                    "on-secondary-container": "#fefcff",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "outline": "#767586",
+                    "inverse-surface": "#283044",
+                    "primary": "#4648d4",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#dae2fd",
+                    "on-secondary-fixed": "#001a42",
+                    "surface-container-high": "#e2e7ff",
+                    "on-error": "#ffffff",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "surface-container-low": "#f2f3ff",
+                    "tertiary-fixed": "#f0dbff",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#c7c4d7",
+                    "tertiary": "#8127cf",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "on-tertiary-container": "#fffbff",
+                    "surface-tint": "#494bd6",
+                    "error": "#ba1a1a",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#faf8ff",
+                    "secondary-container": "#2170e4",
+                    "on-primary-fixed": "#07006c",
+                    "surface-variant": "#dae2fd",
+                    "primary-fixed": "#e1e0ff",
+                    "inverse-on-surface": "#eef0ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .power-gradient {
+            background: linear-gradient(45deg, #4648d4, #8127cf);
+        }
+        .glass-shell {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen">
+<!-- Top AppBar (from Shared Components JSON) -->
+<header class="w-full top-0 sticky bg-[#faf8ff] dark:bg-slate-950 z-50">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high ring-2 ring-primary/10">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="clean professional studio portrait of a young man with soft lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkrE5L5jDiH8B-EPzS6jsE_BGQ391t6-h-km26lOht_FFeGDYVsEqTqJbCn6hAs3Tudwqw5AHjY-_p1D5l2dFMIWfYVe9AIbc6F0cNb734Q6N9X23ux5BdG9WagFjnAlI18s_S0HamLz_hBSNfZEIF8N-DFc_OTVNwvf-z1g0V_q22toHCm9nNf8fb2Lg87benO9lgHQVnr5lYbMkQ8oTI7h5fzShnnL0YmI5kpLyjeGLG5R5OxmIJYa9EH1Xnz1krTc-9l0kLijJP"/>
+</div>
+<h1 class="font-headline font-bold tracking-tight text-xl text-[#131b2e] dark:text-slate-100 uppercase">PRISM</h1>
+</div>
+<button class="text-[#464554] p-2 rounded-full hover:bg-[#f2f3ff] transition-colors duration-300">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<main class="max-w-md mx-auto px-6 pb-32 pt-4">
+<!-- Profile Section -->
+<section class="mb-10">
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-[0_8px_24px_rgba(19,27,46,0.04)] text-center">
+<div class="relative inline-block mb-4">
+<div class="w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-primary to-tertiary">
+<div class="w-full h-full rounded-full bg-white p-0.5">
+<img alt="Alex Rivers" class="w-full h-full rounded-full object-cover" data-alt="high resolution close up of male face looking confident with gentle smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDG6aGuny1pxRLhU_954Z_sc6B1SB8BLGkf2mTcAocdn1DPij-VpU8xEYVUy3bmsrWkg01l6_Fj-iYYjDxq5JfhO2QaCHO0JBRU4yKD41G1Edp2RksYLVpD5JaQy8AI6YbKJ5trWApLN-5xJKv3YDJ0Bj7OqDwYQAiqcfnLwdBbj0ICv5TIh-u_jHMwBaDHN8FNlNSOJoL3clwNhSUeZhj8Mje3CxiBo-z-ZqCW3HTjNJ8riJtxqx-0phady11bTC2bFLpxkE_-0ZeM"/>
+</div>
+</div>
+</div>
+<h2 class="font-headline text-2xl font-extrabold text-on-surface tracking-tight mb-1">Alex Rivers</h2>
+<p class="text-on-surface-variant text-sm font-medium mb-6">DID: 0xA7...92K</p>
+<button class="w-full py-3.5 px-6 rounded-full bg-surface-container-highest text-on-secondary-fixed-variant font-bold text-sm hover:opacity-80 transition-all">
+                    View Identity
+                </button>
+</div>
+</section>
+<!-- Privacy Controls Section -->
+<section class="mb-10">
+<h3 class="font-headline text-lg font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">security</span>
+                Privacy Controls
+            </h3>
+<div class="bg-surface-container-low rounded-3xl p-2">
+<div class="space-y-1">
+<!-- Toggle 1 -->
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl">
+<span class="font-medium text-on-surface">Always ask before sharing</span>
+<div class="w-12 h-6 rounded-full power-gradient relative p-1 flex items-center justify-end">
+<div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+<!-- Toggle 2 -->
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl">
+<span class="font-medium text-on-surface">Auto-expire consent</span>
+<div class="w-12 h-6 rounded-full bg-surface-container-highest relative p-1 flex items-center">
+<div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+<!-- Dropdown -->
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl">
+<span class="font-medium text-on-surface">Default consent duration</span>
+<div class="flex items-center gap-2 text-primary font-bold text-sm">
+                            7 days
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Preferences Section -->
+<section class="mb-10">
+<h3 class="font-headline text-lg font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary">tune</span>
+                Preferences
+            </h3>
+<div class="bg-surface-container-low rounded-3xl p-2">
+<div class="space-y-1">
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl">
+<span class="font-medium text-on-surface">Language</span>
+<div class="flex items-center gap-2 text-on-surface-variant text-sm font-medium">
+                            English
+                            <span class="material-symbols-outlined text-sm">chevron_right</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl">
+<span class="font-medium text-on-surface">Notifications</span>
+<div class="w-12 h-6 rounded-full power-gradient relative p-1 flex items-center justify-end">
+<div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Security Section -->
+<section class="mb-10">
+<h3 class="font-headline text-lg font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">lock</span>
+                Security
+            </h3>
+<div class="bg-surface-container-low rounded-3xl p-2">
+<div class="space-y-1">
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl">
+<span class="font-medium text-on-surface">Enable biometric lock</span>
+<div class="w-12 h-6 rounded-full power-gradient relative p-1 flex items-center justify-end">
+<div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl">
+<span class="font-medium text-on-surface">Set PIN</span>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Danger Zone Section -->
+<section class="mb-10">
+<h3 class="font-headline text-lg font-bold mb-4 flex items-center gap-2 text-error">
+<span class="material-symbols-outlined">warning</span>
+                Danger Zone
+            </h3>
+<div class="bg-error-container/20 rounded-3xl p-2">
+<div class="space-y-1">
+<button class="w-full flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl group active:bg-error-container transition-colors">
+<span class="font-semibold text-error">Delete Account</span>
+<span class="material-symbols-outlined text-error">delete_forever</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl active:bg-surface-container transition-colors">
+<span class="font-semibold text-on-surface">Reset Identity</span>
+<span class="material-symbols-outlined text-on-surface-variant">refresh</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Signature Branding (Visual Token from DS) -->
+<div class="flex justify-center py-4">
+<div class="h-1 w-24 rounded-full bg-gradient-to-r from-primary/20 via-tertiary/20 to-primary/20"></div>
+</div>
+</main>
+<!-- Bottom Navigation (from Shared Components JSON) -->
+<nav class="fixed bottom-0 left-0 w-full z-50">
+<!-- Glassmorphism Shell -->
+<div class="bg-[#ffffff]/60 backdrop-blur-xl border-t border-[#c7c4d7]/15 rounded-t-3xl shadow-[0_-8px_24px_rgba(19,27,46,0.06)] flex justify-around items-center px-4 pt-3 pb-6">
+<!-- Vault Item -->
+<a class="flex flex-col items-center justify-center text-[#464554]" href="#">
+<span class="material-symbols-outlined mb-1">account_balance_wallet</span>
+<span class="font-['Inter'] text-[11px] font-semibold">Vault</span>
+</a>
+<!-- Activity Item -->
+<a class="flex flex-col items-center justify-center text-[#464554]" href="#">
+<span class="material-symbols-outlined mb-1">analytics</span>
+<span class="font-['Inter'] text-[11px] font-semibold">Activity</span>
+</a>
+<!-- Security Item -->
+<a class="flex flex-col items-center justify-center text-[#464554]" href="#">
+<span class="material-symbols-outlined mb-1">verified_user</span>
+<span class="font-['Inter'] text-[11px] font-semibold">Security</span>
+</a>
+<!-- Settings Item (ACTIVE) -->
+<a class="flex flex-col items-center justify-center text-[#4648d4] scale-110 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-['Inter'] text-[11px] font-semibold">Settings</span>
+</a>
+</div>
+</nav>
+</body></html>

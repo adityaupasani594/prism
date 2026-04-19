@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Consent History - PRISM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#283044",
+                        "outline": "#767586",
+                        "on-tertiary-fixed-variant": "#6900b3",
+                        "tertiary-fixed": "#f0dbff",
+                        "on-secondary-fixed-variant": "#004395",
+                        "surface-bright": "#faf8ff",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-error": "#ffffff",
+                        "on-background": "#131b2e",
+                        "surface-container-low": "#f2f3ff",
+                        "on-tertiary-fixed": "#2c0051",
+                        "on-secondary-container": "#fefcff",
+                        "tertiary-container": "#9c48ea",
+                        "secondary": "#0058be",
+                        "surface-container-high": "#e2e7ff",
+                        "tertiary-fixed-dim": "#ddb7ff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#2170e4",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container-highest": "#dae2fd",
+                        "primary-container": "#6063ee",
+                        "inverse-on-surface": "#eef0ff",
+                        "surface-container": "#eaedff",
+                        "surface-tint": "#494bd6",
+                        "primary": "#4648d4",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "background": "#faf8ff",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "on-surface-variant": "#464554",
+                        "on-tertiary-container": "#fffbff",
+                        "tertiary": "#8127cf",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-surface": "#131b2e",
+                        "surface-dim": "#d2d9f4",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#e1e0ff",
+                        "surface-variant": "#dae2fd",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "inverse-primary": "#c0c1ff",
+                        "outline-variant": "#c7c4d7",
+                        "surface": "#faf8ff",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#001a42",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .power-gradient {
+            background: linear-gradient(45deg, #4648d4 0%, #8127cf 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-50 bg-[#faf8ff] dark:bg-slate-950 flex items-center px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="text-[#6366F1] dark:text-[#818cf8] active:scale-95 duration-200 ease-in-out hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-manrope font-bold tracking-tight text-[#131b2e] dark:text-slate-100 text-xl">Consent History</h1>
+</div>
+</header>
+<main class="px-6 space-y-8">
+<!-- Filter Tab Bar (Asymmetric/Editorial Style) -->
+<section class="mt-4">
+<div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-2">
+<button class="px-6 py-2 rounded-full bg-primary text-on-primary font-semibold text-sm shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+                    All
+                </button>
+<button class="px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-medium text-sm hover:bg-surface-container-high transition-colors">
+                    Active
+                </button>
+<button class="px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-medium text-sm hover:bg-surface-container-high transition-colors">
+                    Expired
+                </button>
+</div>
+</section>
+<!-- Search & Summary Stats (Glassmorphism Accent) -->
+<section class="grid grid-cols-2 gap-4">
+<div class="p-5 rounded-3xl bg-surface-container-lowest shadow-sm border border-outline-variant/10">
+<div class="w-10 h-10 rounded-full power-gradient flex items-center justify-center text-white mb-3 shadow-md">
+<span class="material-symbols-outlined text-lg" data-icon="shield" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Active</p>
+<p class="text-2xl font-headline font-bold text-on-surface">12</p>
+</div>
+<div class="p-5 rounded-3xl bg-surface-container-highest/40 backdrop-blur-md border border-outline-variant/10">
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary mb-3 shadow-sm">
+<span class="material-symbols-outlined text-lg" data-icon="history">history</span>
+</div>
+<p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Total</p>
+<p class="text-2xl font-headline font-bold text-on-surface">48</p>
+</div>
+</section>
+<!-- Scrollable List of Consent Cards -->
+<section class="space-y-6">
+<h2 class="font-headline text-lg font-bold text-on-surface px-1">Recent Permissions</h2>
+<div class="space-y-4">
+<!-- Card 1: Active -->
+<div class="group relative bg-surface-container-lowest p-5 rounded-3xl transition-all duration-300 hover:translate-y-[-2px] shadow-[0_8px_24px_rgba(19,27,46,0.04)]">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl overflow-hidden bg-surface-container-low flex items-center justify-center">
+<img class="w-8 h-8 object-contain" data-alt="minimalist orange and blue grocery cart logo on clean white background professional vector style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHn_2md_pescENeESADwv_OQXy3Co67PlaViKFZorGlbYSJt7x3UPF7sNJBbj1SsVzkEltu64sAdaJQKSP7u9YoudPpFJ9H8s4TZjcaL1MzxIqM4_kV13tmylxKYKzygqNMhJjNqr1W4cnhLTAptPQzlNhmSYYHxFBEZOb4KcZJQwoXUfbFD_h7VHSFB9i1JxBYpQbZBn7d0aAW-EealqVEvrBEPjbIDZL0ED0jG688bXPCwkPhwS2O6ZBTuDxIBtc1Z2vGKJTj2Mh"/>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface">FastKart Delivery</h3>
+<p class="text-sm text-on-surface-variant">Last accessed: 2h ago</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Active
+                        </span>
+</div>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-3 py-1.5 rounded-xl bg-surface-container-low text-on-surface-variant text-xs font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="location_on">location_on</span> Location
+                        </span>
+<span class="px-3 py-1.5 rounded-xl bg-surface-container-low text-on-surface-variant text-xs font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="shopping_bag">shopping_bag</span> Purchase History
+                        </span>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/10">
+<span class="text-xs font-semibold text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span> Duration: 7 days
+                        </span>
+<button class="text-primary text-xs font-bold hover:underline">Manage</button>
+</div>
+</div>
+<!-- Card 2: Expired -->
+<div class="group relative bg-surface-container-low/50 p-5 rounded-3xl border border-transparent transition-all duration-300">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl overflow-hidden bg-white/60 flex items-center justify-center">
+<img class="w-8 h-8 object-contain opacity-70" data-alt="minimalist green leaf and heart pulse logo design clean organic tech style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEKqQFbgQomN0DxczCESqcFZVGFVad9-EnUZ97Y727a8KX2ZeU6RAY9K1pSAbe_jvA88qlgin7K5S8Hn0SgoazRLWWgOXfDjJisLEL0PPYvBEfkzq5mlNWxsQTBZWxeKh7V9-Uvwef-9Zj6-cQwsMvi_kw1QFzfKbTt_yIZ0UNUyNWr2X5oVdLdReuhvROv6T35LWyBBO6DgYPRSr-j9P1SXLWtKmqf4C02gfTz_TjwnD675-QpaXyANhTfojA53m9aJZ53REDWLWa"/>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface-variant">HealthyLife</h3>
+<p class="text-sm text-on-surface-variant/60">Expired: Oct 24, 2023</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
+                            Expired
+                        </span>
+</div>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-3 py-1.5 rounded-xl bg-white/40 text-on-surface-variant/60 text-xs font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="directions_run">directions_run</span> Step Count
+                        </span>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/10">
+<span class="text-xs font-semibold text-on-surface-variant/60 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span> Duration: 30 days
+                        </span>
+<button class="text-on-surface-variant text-xs font-bold opacity-60">Renew</button>
+</div>
+</div>
+<!-- Card 3: Revoked -->
+<div class="group relative bg-surface-container-lowest p-5 rounded-3xl shadow-[0_8px_24px_rgba(19,27,46,0.04)] overflow-hidden">
+<!-- Accent Line -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
+<div class="flex items-start justify-between mb-4 pl-1">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl overflow-hidden bg-surface-container-low flex items-center justify-center">
+<img class="w-8 h-8 object-contain" data-alt="modern geometric eco-friendly logo with teal and navy abstract mountain shapes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrxFv4_WhhdwAleoW-1CNfyk9z4URTCEmfybk_FQhGRbrfTZqMfRLe0VcmNE-HTHu47NNp4-7vhE-4_Jmh3uChbHQZxPEVxaIAA6iDwDr-3qBn1GZIrNp8hbGtoJjYA1bVG-8i6ckkk1_PYDeySbotm7VDiSJN0xYSAEqrwulqBiiviRRaQ1eq7uZO7XofNd_vRa_SAbxUPR25KwAJlbuP_F91diXKc1BPK0DdflGLX4RSL1c337vO8MBtlLRHRyA8BK-5yUTz2f0O"/>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface">EcoInsights</h3>
+<p class="text-sm text-on-surface-variant">Revoked by user</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-error-container text-on-error-container text-[10px] font-bold uppercase tracking-widest">
+                            Revoked
+                        </span>
+</div>
+<div class="flex flex-wrap gap-2 mb-4 pl-1">
+<span class="px-3 py-1.5 rounded-xl bg-surface-container-low text-on-surface-variant text-xs font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="analytics">analytics</span> Usage Analytics
+                        </span>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/10 pl-1">
+<span class="text-xs font-semibold text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="timer">timer</span> One-time access
+                        </span>
+<button class="text-primary text-xs font-bold hover:underline">Re-authorize</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Security Tip (Editorial Card) -->
+<section class="pb-10">
+<div class="p-6 rounded-[2rem] power-gradient text-white relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+<div class="relative z-10">
+<h4 class="font-headline font-extrabold text-lg mb-2">Privacy Checkup</h4>
+<p class="text-white/80 text-sm leading-relaxed mb-4">You have 3 active permissions that haven't been used in over 14 days.</p>
+<button class="px-5 py-2.5 bg-white text-primary rounded-full text-xs font-bold shadow-sm active:scale-95 transition-transform">
+                        Review Now
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-[#ffffff]/60 dark:bg-slate-900/60 backdrop-blur-xl border-t border-[#c7c4d7]/15 rounded-t-[1.5rem] shadow-[0_-8px_24px_rgba(19,27,46,0.06)] flex justify-around items-center px-4 pt-3 pb-8">
+<a class="flex flex-col items-center justify-center text-[#464554] dark:text-slate-400 px-4 py-1.5 hover:bg-[#f2f3ff] dark:hover:bg-slate-800 transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="shield">shield</span>
+<span class="font-inter text-xs font-semibold mt-1">Vault</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#464554] dark:text-slate-400 px-4 py-1.5 hover:bg-[#f2f3ff] dark:hover:bg-slate-800 transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-inter text-xs font-semibold mt-1">Activity</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#dae2fd] dark:bg-indigo-900/40 text-[#4648d4] dark:text-indigo-200 rounded-2xl px-4 py-1.5 active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-inter text-xs font-semibold mt-1">Privacy</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#464554] dark:text-slate-400 px-4 py-1.5 hover:bg-[#f2f3ff] dark:hover:bg-slate-800 transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-inter text-xs font-semibold mt-1">Settings</span>
+</a>
+</nav>
+</body></html>
