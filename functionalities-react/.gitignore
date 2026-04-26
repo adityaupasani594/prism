@@ -1,0 +1,62 @@
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+build/
+*.local
+.npm
+.eslintcache
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+# Environments
+.env
+.env.*
+!.env.example
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Operating System
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ZKP Circuits Build Artifacts
+**/circuits/build/
+**/circuits/**/*.ptau
+**/circuits/**/*.zkey
+**/circuits/**/*.wtns
+**/circuits/**/*.r1cs
+**/circuits/**/*.sym
+**/circuits/**/*_js/
+**/circuits/**/*_cpp/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Local configuration
+.cache/

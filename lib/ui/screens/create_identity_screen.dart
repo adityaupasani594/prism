@@ -1,8 +1,100 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../app_routes.dart';
+import '../../services/api_service.dart';
 
-class CreateIdentityScreen extends StatelessWidget {
+class CreateIdentityScreen extends StatefulWidget {
   const CreateIdentityScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CreateIdentityScreen> createState() => _CreateIdentityScreenState();
+}
+
+class _CreateIdentityScreenState extends State<CreateIdentityScreen> {
+  static const String _demoDid = 'did:prism:user123';
+
+  final ImagePicker _imagePicker = ImagePicker();
+  bool _isScanning = false;
+  bool _isOnboarding = false;
+  Map<String, dynamic>? _lastScanResult;
+
+  Future<void> _scanIdentityDocument(String docType) async {
+    if (_isScanning) return;
+
+    final pickedFile = await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (pickedFile == null) return;
+
+    setState(() {
+      _isScanning = true;
+    });
+
+    try {
+      final bytes = await pickedFile.readAsBytes();
+      final response = await ApiService().scanIdentityDocument(
+        fileBytes: bytes,
+        fileName: pickedFile.name,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _lastScanResult = {
+          'document_type': docType,
+          ...response,
+        };
+      });
+
+      await showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('$docType Scan Complete'),
+            content: Text(response.toString()),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Scan failed: $e')),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isScanning = false;
+      });
+    }
+  }
+
+  Future<void> _onboardAndGenerateIdentity() async {
+    if (_isOnboarding) return;
+
+    setState(() {
+      _isOnboarding = true;
+    });
+
+    try {
+      await ApiService().onboardUser(_demoDid);
+      if (!mounted) return;
+      Navigator.pushNamed(context, AppRoutes.onboardingSecured);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Onboarding failed: $e')),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isOnboarding = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,8 +183,7 @@ class CreateIdentityScreen extends StatelessWidget {
                 title: 'Upload Aadhaar',
                 subtitle: 'Securely verify your residence and identity using UIDAI.',
                 onTap: () {
-                  // Connect to next flow step
-                  Navigator.pushNamed(context, AppRoutes.onboardingProof);
+                  _scanIdentityDocument('Aadhaar');
                 },
               ),
               const SizedBox(height: 16),
@@ -102,9 +193,39 @@ class CreateIdentityScreen extends StatelessWidget {
                 title: 'Upload PAN',
                 subtitle: 'Tax verification for seamless high-value transactions.',
                 onTap: () {
-                  Navigator.pushNamed(context, AppRoutes.onboardingProof);
+                  _scanIdentityDocument('PAN');
                 },
               ),
+              if (_isScanning) ...[
+                const SizedBox(height: 16),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    SizedBox(width: 10),
+                    Text('Scanning document...'),
+                  ],
+                ),
+              ],
+              if (_lastScanResult != null) ...[
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Last scan (${_lastScanResult!['document_type']}): ${_lastScanResult.toString()}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              ],
               const SizedBox(height: 32),
 
               // Info Block
@@ -135,11 +256,9 @@ class CreateIdentityScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.onboardingSecured);
-                  },
+                  onPressed: _isOnboarding ? null : _onboardAndGenerateIdentity,
                   icon: const Icon(Icons.fingerprint),
-                  label: const Text('Generate Digital ID'),
+                  label: Text(_isOnboarding ? 'Generating...' : 'Generate Digital ID'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     backgroundColor: Theme.of(context).colorScheme.primary,

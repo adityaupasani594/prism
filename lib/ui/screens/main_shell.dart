@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/bottom_nav_bar.dart';
 import 'consent_request_screen.dart';
+import 'data_marketplace_screen.dart';
 import 'identity_wallet_screen.dart';
 import 'privacy_dashboard_screen.dart';
 
@@ -18,13 +19,21 @@ class _MainShellState extends State<MainShell> {
   final List<Widget> _screens = [
     const IdentityWalletScreen(),
     const ConsentRequestScreen(),
+    const DataMarketplaceScreen(),
     const PrivacyDashboardScreen(),
   ];
+
+  int _clampIndex(int index) {
+    if (_screens.isEmpty) return 0;
+    if (index < 0) return 0;
+    if (index >= _screens.length) return _screens.length - 1;
+    return index;
+  }
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex;
+    _currentIndex = _clampIndex(widget.initialIndex);
   }
 
   @override
@@ -32,14 +41,14 @@ class _MainShellState extends State<MainShell> {
     return Scaffold(
       extendBody: true,
       body: IndexedStack(
-        index: _currentIndex,
+        index: _clampIndex(_currentIndex),
         children: _screens,
       ),
       bottomNavigationBar: BottomNavBar(
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
-            _currentIndex = index;
+            _currentIndex = _clampIndex(index);
           });
         },
       ),

@@ -4,6 +4,7 @@ import '../widgets/glass_card.dart';
 import '../widgets/power_button.dart';
 import '../../theme/colors.dart';
 import '../app_routes.dart';
+import '../../services/api_service.dart';
 
 class ConsentRequestScreen extends StatefulWidget {
   const ConsentRequestScreen({Key? key}) : super(key: key);
@@ -13,6 +14,42 @@ class ConsentRequestScreen extends StatefulWidget {
 }
 
 class _ConsentRequestScreenState extends State<ConsentRequestScreen> {
+  static const String _demoDid = 'did:prism:user123';
+  bool _isSubmitting = false;
+
+  Future<void> _handleAllow() async {
+    if (_isSubmitting) return;
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      await ApiService().grantConsent(
+        userDid: _demoDid,
+        purposeTag: 'Delivery tracking',
+        dataFields: {
+          'location': true,
+          'requester': 'FastKart Delivery',
+        },
+        ttlSeconds: 7 * 24 * 60 * 60,
+      );
+
+      if (!mounted) return;
+      Navigator.pushNamed(context, AppRoutes.verificationSuccess);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to grant consent: $e')),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isSubmitting = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -190,10 +227,8 @@ class _ConsentRequestScreenState extends State<ConsentRequestScreen> {
 
             // Action Buttons
             PowerButton(
-              text: 'Allow',
-              onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.verificationSuccess);
-              },
+              text: _isSubmitting ? 'Allowing...' : 'Allow',
+              onPressed: _isSubmitting ? () {} : _handleAllow,
             ),
             const SizedBox(height: 16),
             PowerButton(

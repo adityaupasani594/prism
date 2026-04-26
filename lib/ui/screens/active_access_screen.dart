@@ -1,8 +1,83 @@
 import 'package:flutter/material.dart';
+import '../../services/api_service.dart';
 import '../../theme/colors.dart';
 
-class ActiveAccessScreen extends StatelessWidget {
+class ActiveAccessScreen extends StatefulWidget {
   const ActiveAccessScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ActiveAccessScreen> createState() => _ActiveAccessScreenState();
+}
+
+class _ActiveAccessScreenState extends State<ActiveAccessScreen> {
+  static const String _demoDid = 'did:prism:user123';
+
+  bool _isLoading = true;
+  String? _errorMessage;
+  List<dynamic> _activeConsents = [];
+  final Set<String> _revokingConsentIds = <String>{};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadActiveConsents();
+  }
+
+  Future<void> _loadActiveConsents() async {
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+    }
+
+    try {
+      final response = await ApiService().getConsentStatus(_demoDid);
+      final consents = response['consents'];
+      if (!mounted) return;
+      setState(() {
+        _activeConsents = consents is List<dynamic> ? consents : <dynamic>[];
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Unable to load active access data.';
+      });
+    }
+  }
+
+  Future<void> _revokeConsentById(String consentId) async {
+    if (_revokingConsentIds.contains(consentId)) return;
+
+    setState(() {
+      _revokingConsentIds.add(consentId);
+    });
+
+    try {
+      await ApiService().revokeConsent(consentId);
+      if (!mounted) return;
+      setState(() {
+        _activeConsents = _activeConsents
+            .where((consent) => consent['id']?.toString() != consentId)
+            .toList();
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Access revoked successfully.')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to revoke access: $e')),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _revokingConsentIds.remove(consentId);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,39 +123,62 @@ class ActiveAccessScreen extends StatelessWidget {
                 style: TextStyle(color: PrismColors.onSurfaceVariant, fontSize: 14, height: 1.5),
                 children: [
                   const TextSpan(text: 'You have '),
-                  TextSpan(text: '2 services', style: TextStyle(fontWeight: FontWeight.bold, color: PrismColors.primary)),
+                  TextSpan(
+                    text: '${_activeConsents.length} services',
+                    style: TextStyle(fontWeight: FontWeight.bold, color: PrismColors.primary),
+                  ),
                   const TextSpan(text: ' currently accessing your personal data ecosystem.'),
                 ]
               )
             ),
             const SizedBox(height: 32),
 
-            // Card 1: FastKart
-            _buildAccessCard(
-              context,
-              company: 'FastKart Delivery',
-              dataType: 'Location data',
-              icon: Icons.location_on,
-              iconColor: PrismColors.primary,
-              expiresText: 'Expires in 5 days',
-              progress: 0.7,
-              progressColor: PrismColors.primary,
-            ),
-            const SizedBox(height: 24),
+            if (_isLoading)
+              const Center(child: CircularProgressIndicator())
+            else if (_errorMessage != null) ...[
+              Center(
+                child: Column(
+                  children: [
+                    Text(_errorMessage!, style: TextStyle(color: PrismColors.onSurfaceVariant)),
+                    const SizedBox(height: 8),
+                    OutlinedButton(onPressed: _loadActiveConsents, child: const Text('Retry')),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+            ] else if (_activeConsents.isEmpty) ...[
+              Center(
+                child: Text(
+                  'No active services currently.',
+                  style: TextStyle(color: PrismColors.onSurfaceVariant),
+                ),
+              ),
+              const SizedBox(height: 24),
+            ] else ...[
+              ..._activeConsents.map((consent) {
+                final consentId = consent['id']?.toString() ?? '';
+                final purposeTag = consent['purpose_tag']?.toString() ?? 'Unknown service';
+                final dataFields = consent['data_fields']?.toString() ?? 'Data access';
+                final expiry = consent['expiry_timestamp']?.toString() ?? 'N/A';
+                final isRevoking = _revokingConsentIds.contains(consentId);
 
-            // Card 2: HealthApp
-            _buildAccessCard(
-              context,
-              company: 'HealthApp',
-              dataType: 'Fitness Data',
-              icon: Icons.fitness_center,
-              iconColor: PrismColors.tertiary,
-              expiresText: 'Expires in 2 days',
-              progress: 0.3,
-              progressColor: PrismColors.error,
-              isWarning: true,
-            ),
-            const SizedBox(height: 24),
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 24),
+                  child: _buildAccessCard(
+                    context,
+                    company: purposeTag,
+                    dataType: dataFields,
+                    icon: Icons.lock_open,
+                    iconColor: PrismColors.primary,
+                    expiresText: 'Expires: $expiry',
+                    progress: 0.6,
+                    progressColor: PrismColors.primary,
+                    isRevoking: isRevoking,
+                    onRevoke: consentId.isEmpty ? null : () => _revokeConsentById(consentId),
+                  ),
+                );
+              }),
+            ],
 
             // Empty State
             Container(
@@ -169,7 +267,16 @@ class ActiveAccessScreen extends StatelessWidget {
   }
 
   Widget _buildAccessCard(BuildContext context, {
-    required String company, required String dataType, required IconData icon, required Color iconColor, required String expiresText, required double progress, required Color progressColor, bool isWarning = false
+    required String company,
+    required String dataType,
+    required IconData icon,
+    required Color iconColor,
+    required String expiresText,
+    required double progress,
+    required Color progressColor,
+    bool isWarning = false,
+    bool isRevoking = false,
+    VoidCallback? onRevoke,
   }) {
     return Container(
       padding: const EdgeInsets.all(24),
@@ -252,9 +359,11 @@ class ActiveAccessScreen extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: TextButton.icon(
-              onPressed: () {},
+              onPressed: isRevoking ? null : onRevoke,
               icon: const Icon(Icons.cancel, size: 20),
-              label: const Text('Revoke Access', style: TextStyle(fontWeight: FontWeight.bold)),
+              label: isRevoking
+                  ? const Text('Revoking...', style: TextStyle(fontWeight: FontWeight.bold))
+                  : const Text('Revoke Access', style: TextStyle(fontWeight: FontWeight.bold)),
               style: TextButton.styleFrom(
                 backgroundColor: PrismColors.errorContainer,
                 foregroundColor: PrismColors.onErrorContainer,

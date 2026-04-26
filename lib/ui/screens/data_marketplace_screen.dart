@@ -1,8 +1,123 @@
 import 'package:flutter/material.dart';
 import '../../theme/colors.dart';
+import '../../services/api_service.dart';
 
-class DataMarketplaceScreen extends StatelessWidget {
+class DataMarketplaceScreen extends StatefulWidget {
   const DataMarketplaceScreen({Key? key}) : super(key: key);
+
+  @override
+  State<DataMarketplaceScreen> createState() => _DataMarketplaceScreenState();
+}
+
+class _DataMarketplaceScreenState extends State<DataMarketplaceScreen> {
+  static const String _demoDid = 'did:prism:user123';
+
+  bool _isLoading = true;
+  List<dynamic> _requests = [];
+  String? _errorMessage;
+  final Set<String> _processingRequestIds = <String>{};
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchMarketplaceRequests();
+  }
+
+  Future<void> _acceptMarketplaceOffer(Map<String, dynamic> request) async {
+    final requestId = request['id']?.toString();
+    if (requestId == null || requestId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid request id.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _processingRequestIds.add(requestId);
+    });
+
+    try {
+      final response = await ApiService().respondToMarketplaceRequest(
+        requestId: requestId,
+        userDid: _demoDid,
+        providedData: {
+          'accepted_at': DateTime.now().toIso8601String(),
+          'source': 'flutter_app',
+        },
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _requests = _requests.where((item) => item['id']?.toString() != requestId).toList();
+      });
+
+      final summary = (response['summary'] ?? 'Offer accepted successfully.').toString();
+      final payoutId = (response['payout_id'] ?? '').toString();
+      final reward = (response['reward_amount'] ?? request['reward_amount'] ?? 'N/A').toString();
+
+      await showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Offer Accepted'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Reward: $reward'),
+                const SizedBox(height: 8),
+                Text('Payout ID: ${payoutId.isEmpty ? 'Pending' : payoutId}'),
+                const SizedBox(height: 12),
+                Text(summary),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to accept offer: $e')),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _processingRequestIds.remove(requestId);
+      });
+    }
+  }
+
+  Future<void> _fetchMarketplaceRequests() async {
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+    }
+
+    try {
+      final requests = await ApiService().getMarketplaceRequests();
+      if (!mounted) return;
+      setState(() {
+        _requests = requests;
+        _isLoading = false;
+      });
+    } catch (e) {
+      debugPrint('Error fetching requests: $e');
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Unable to load offers. Check backend connection and try again.';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,49 +243,78 @@ class DataMarketplaceScreen extends StatelessWidget {
             Text('Active Data Offers', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             
-            _buildOfferCard(
-              context,
-              icon: Icons.shopping_bag,
-              iconColor: PrismColors.primary,
-              bgColor: PrismColors.primary.withOpacity(0.1),
-              category: 'Shopping preferences',
-              title: 'Retail Analytics',
-              price: '₹15',
-              timeLeft: '3 days left',
-            ),
-            const SizedBox(height: 16),
-            _buildOfferCard(
-              context,
-              icon: Icons.fitness_center,
-              iconColor: PrismColors.tertiary,
-              bgColor: PrismColors.tertiary.withOpacity(0.1),
-              category: 'Fitness data insights',
-              title: 'Vitality Pool',
-              price: '₹20',
-              timeLeft: '2 days left',
-            ),
-            const SizedBox(height: 16),
-            _buildOfferCard(
-              context,
-              icon: Icons.public,
-              iconColor: PrismColors.secondary,
-              bgColor: PrismColors.secondary.withOpacity(0.1),
-              category: 'Browsing habits',
-              title: 'Web Patterns',
-              price: '₹25',
-              timeLeft: '5 days left',
-            ),
-             const SizedBox(height: 16),
-            _buildOfferCard(
-              context,
-              icon: Icons.location_on,
-              iconColor: PrismColors.onSurfaceVariant,
-              bgColor: PrismColors.onSurfaceVariant.withOpacity(0.1),
-              category: 'Location history (Low res)',
-              title: 'Traffic Node',
-              price: '₹10',
-              timeLeft: '24 hours left',
-            ),
+            if (_isLoading)
+              const Center(child: CircularProgressIndicator())
+            else if (_errorMessage != null)
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      _errorMessage!,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: PrismColors.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    OutlinedButton(
+                      onPressed: _fetchMarketplaceRequests,
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              )
+            else if (_requests.isEmpty)
+              const Center(child: Text("No active offers currently."))
+            else
+              ..._requests.map((req) {
+                  final requestId = req['id']?.toString() ?? '';
+                  final rewardAmount = req['reward_amount']?.toString() ?? '₹10';
+                 return Padding(
+                   padding: const EdgeInsets.only(bottom: 16),
+                   child: _buildOfferCard(
+                    context,
+                    icon: Icons.list_alt,
+                    iconColor: PrismColors.primary,
+                    bgColor: PrismColors.primary.withOpacity(0.1),
+                    category: req['requester_name'] ?? 'Data Partner',
+                    title: req['title']?.toString() ?? 'Data Offer',
+                    price: rewardAmount,
+                    timeLeft: 'Active Now',
+                    onAccept: () => _acceptMarketplaceOffer(req),
+                    isAccepting: _processingRequestIds.contains(requestId),
+                   ),
+                 );
+              }).toList(),
+            
+            // Adding a few placeholder ones
+            if (!_isLoading && _requests.isEmpty) ...[
+              _buildOfferCard(
+                context,
+                icon: Icons.shopping_bag,
+                iconColor: PrismColors.primary,
+                bgColor: PrismColors.primary.withOpacity(0.1),
+                category: 'Shopping preferences',
+                title: 'Retail Analytics',
+                price: '₹15',
+                timeLeft: '3 days left',
+                onAccept: () {},
+                isAccepting: false,
+              ),
+              const SizedBox(height: 16),
+              _buildOfferCard(
+                context,
+                icon: Icons.fitness_center,
+                iconColor: PrismColors.tertiary,
+                bgColor: PrismColors.tertiary.withOpacity(0.1),
+                category: 'Fitness data insights',
+                title: 'Vitality Pool',
+                price: '₹20',
+                timeLeft: '2 days left',
+                onAccept: () {},
+                isAccepting: false,
+              ),
+            ]
           ],
         ),
       ),
@@ -178,7 +322,15 @@ class DataMarketplaceScreen extends StatelessWidget {
   }
 
   Widget _buildOfferCard(BuildContext context, {
-    required IconData icon, required Color iconColor, required Color bgColor, required String category, required String title, required String price, required String timeLeft
+    required IconData icon,
+    required Color iconColor,
+    required Color bgColor,
+    required String category,
+    required String title,
+    required String price,
+    required String timeLeft,
+    required VoidCallback onAccept,
+    required bool isAccepting,
   }) {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -246,14 +398,20 @@ class DataMarketplaceScreen extends StatelessWidget {
                 ],
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: isAccepting ? null : onAccept,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: PrismColors.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
                 ),
-                child: const Text('Accept', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                child: isAccepting
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Text('Accept', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
               )
             ],
           )

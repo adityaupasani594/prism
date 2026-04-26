@@ -1,9 +1,82 @@
 import 'package:flutter/material.dart';
 import '../../theme/colors.dart';
 import '../app_routes.dart';
+import '../../services/api_service.dart';
 
-class PrivacyDashboardScreen extends StatelessWidget {
+class PrivacyDashboardScreen extends StatefulWidget {
   const PrivacyDashboardScreen({Key? key}) : super(key: key);
+
+  @override
+  State<PrivacyDashboardScreen> createState() => _PrivacyDashboardScreenState();
+}
+
+class _PrivacyDashboardScreenState extends State<PrivacyDashboardScreen> {
+  final TextEditingController _complianceController = TextEditingController(
+    text: 'We collect user location data for delivery tracking with user consent and revocation support.',
+  );
+
+  bool _isScanningCompliance = false;
+  bool _isCheckingBackend = false;
+  Map<String, dynamic>? _complianceResult;
+  String? _backendStatus;
+
+  @override
+  void dispose() {
+    _complianceController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _runComplianceScan() async {
+    if (_isScanningCompliance) return;
+
+    setState(() {
+      _isScanningCompliance = true;
+    });
+
+    try {
+      final result = await ApiService().scanCompliance(_complianceController.text.trim());
+      if (!mounted) return;
+      setState(() {
+        _complianceResult = result;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Compliance scan failed: $e')),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isScanningCompliance = false;
+      });
+    }
+  }
+
+  Future<void> _checkBackendStatus() async {
+    if (_isCheckingBackend) return;
+
+    setState(() {
+      _isCheckingBackend = true;
+    });
+
+    try {
+      final result = await ApiService().getDebugStatus();
+      if (!mounted) return;
+      setState(() {
+        _backendStatus = result.toString();
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _backendStatus = 'Backend check failed: $e';
+      });
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isCheckingBackend = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,6 +266,63 @@ class PrivacyDashboardScreen extends StatelessWidget {
               subStatus: 'Active',
               isWarning: false,
             ),
+            const SizedBox(height: 32),
+
+            Text(
+              'Compliance Copilot',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: PrismColors.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextField(
+                    controller: _complianceController,
+                    maxLines: 4,
+                    decoration: const InputDecoration(
+                      labelText: 'Policy or text to scan',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: _isScanningCompliance ? null : _runComplianceScan,
+                    child: _isScanningCompliance
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Run Compliance Scan'),
+                  ),
+                  if (_complianceResult != null) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      _complianceResult.toString(),
+                      style: TextStyle(color: PrismColors.onSurfaceVariant, fontSize: 12),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            OutlinedButton(
+              onPressed: _isCheckingBackend ? null : _checkBackendStatus,
+              child: Text(_isCheckingBackend ? 'Checking backend...' : 'Check Backend Status'),
+            ),
+            if (_backendStatus != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                _backendStatus!,
+                style: TextStyle(fontSize: 12, color: PrismColors.onSurfaceVariant),
+              ),
+            ],
           ],
         ),
       ),

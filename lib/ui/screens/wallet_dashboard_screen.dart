@@ -1,8 +1,50 @@
 import 'package:flutter/material.dart';
 import '../../theme/colors.dart';
+import '../../services/api_service.dart';
 
-class WalletDashboardScreen extends StatelessWidget {
+class WalletDashboardScreen extends StatefulWidget {
   const WalletDashboardScreen({Key? key}) : super(key: key);
+
+  @override
+  State<WalletDashboardScreen> createState() => _WalletDashboardScreenState();
+}
+
+class _WalletDashboardScreenState extends State<WalletDashboardScreen> {
+  static const String _demoDid = 'did:prism:user123';
+
+  bool _isLoading = true;
+  String? _errorMessage;
+  String _walletBalance = '0';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWallet();
+  }
+
+  Future<void> _loadWallet() async {
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+    }
+
+    try {
+      final response = await ApiService().getWalletStatus(_demoDid);
+      if (!mounted) return;
+      setState(() {
+        _walletBalance = (response['token_balance'] ?? '0').toString();
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Unable to load wallet balance.';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +100,27 @@ class WalletDashboardScreen extends StatelessWidget {
                     color: PrismColors.onSurfaceVariant.withOpacity(0.7),
                   )),
                   const SizedBox(height: 8),
-                  Text('₹120', style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  Text('₹$_walletBalance', style: Theme.of(context).textTheme.displayLarge?.copyWith(
                     fontWeight: FontWeight.w900,
                     color: PrismColors.onSurface,
                     letterSpacing: -1,
                     height: 1.0,
                   )),
+                  if (_isLoading) ...[
+                    const SizedBox(height: 8),
+                    const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ],
+                  if (_errorMessage != null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      _errorMessage!,
+                      style: TextStyle(fontSize: 12, color: PrismColors.error),
+                    ),
+                  ],
                   const SizedBox(height: 12),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -86,9 +143,9 @@ class WalletDashboardScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: _loadWallet,
                     icon: const Icon(Icons.account_balance_wallet, size: 20),
-                    label: const Text('Withdraw via UPI', style: TextStyle(fontWeight: FontWeight.bold)),
+                    label: const Text('Refresh Wallet', style: TextStyle(fontWeight: FontWeight.bold)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: PrismColors.primary,
                       foregroundColor: Colors.white,
