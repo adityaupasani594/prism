@@ -1,9 +1,53 @@
 import 'package:flutter/material.dart';
 import '../../theme/colors.dart';
 import '../app_routes.dart';
+import '../../services/api_service.dart';
 
-class VerificationRequestScreen extends StatelessWidget {
+class VerificationRequestScreen extends StatefulWidget {
   const VerificationRequestScreen({Key? key}) : super(key: key);
+
+  @override
+  State<VerificationRequestScreen> createState() => _VerificationRequestScreenState();
+}
+
+class _VerificationRequestScreenState extends State<VerificationRequestScreen> {
+  bool _isVerifying = false;
+
+  Future<void> _handleGenerateProof() async {
+    if (_isVerifying) return;
+
+    setState(() {
+      _isVerifying = true;
+    });
+
+    try {
+      final response = await ApiService().verifyAge(
+        {'pi_a': ['0x0'], 'pi_b': [], 'pi_c': []},
+        ['18_plus'],
+      );
+
+      if (!mounted) return;
+
+      final isValid = response['is_valid'] == true;
+      if (isValid) {
+        Navigator.pushNamed(context, AppRoutes.verificationSuccess);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Verification failed.')),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Verification failed: $e')),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isVerifying = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,9 +180,7 @@ class VerificationRequestScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.verificationSuccess);
-                      },
+                      onPressed: _isVerifying ? null : _handleGenerateProof,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         backgroundColor: Colors.transparent, // handled by ink
@@ -154,7 +196,13 @@ class VerificationRequestScreen extends StatelessWidget {
                         child: Container(
                           alignment: Alignment.center,
                           height: 60,
-                          child: const Text('Generate Secure Proof', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
+                          child: _isVerifying
+                              ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(strokeWidth: 2.2, color: Colors.white),
+                                )
+                              : const Text('Generate Secure Proof', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
                         ),
                       ),
                     ),
