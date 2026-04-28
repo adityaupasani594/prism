@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, CheckCircle, EyeOff, FileCheck2, Info, Layers3, ShieldCheck } from 'lucide-react';
+import { Activity, ArrowRight, CheckCircle, Info, Search, ShieldCheck } from 'lucide-react';
 
 type DisclosureMode = 'regional_anonymized' | 'verified_proof' | 'limited_raw';
 
@@ -33,17 +33,17 @@ const modeCopy: Record<DisclosureMode, { title: string; detail: string; icon: Re
   regional_anonymized: {
     title: 'Regional anonymized insight',
     detail: 'Default mode. The enterprise receives aggregate regional intelligence, not individual records.',
-    icon: Layers3,
+    icon: Activity,
   },
   verified_proof: {
     title: 'Verified proof',
     detail: 'PRISM proves eligibility without exposing raw identity documents or sensitive fields.',
-    icon: FileCheck2,
+    icon: ShieldCheck,
   },
   limited_raw: {
     title: 'Limited field sharing',
     detail: 'Only approved fields are made available through PRISM Shield with expiry and audit logs.',
-    icon: EyeOff,
+    icon: Search,
   },
 };
 

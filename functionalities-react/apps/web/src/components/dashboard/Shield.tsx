@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, CheckCircle2, KeyRound, RefreshCw, ShieldCheck, Terminal } from 'lucide-react';
+import { AlertTriangle, CheckCircle, RefreshCw, ShieldCheck, Terminal } from 'lucide-react';
 
 interface ConsentRecord {
   id: string;
@@ -125,7 +125,7 @@ const Shield: React.FC = () => {
         <section className="lg:col-span-2 bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm">
           <div className="flex gap-4 items-start mb-8">
             <div className="bg-blue-50 p-3 rounded-2xl">
-              <KeyRound className="text-blue-600" />
+              <ShieldCheck className="text-blue-600" />
             </div>
             <div>
               <h2 className="text-xl font-black text-slate-900">Active consent policy</h2>
@@ -156,7 +156,7 @@ const Shield: React.FC = () => {
 
           <div className="grid md:grid-cols-3 gap-3">
             <button onClick={() => simulate('allowed')} className="bg-emerald-600 text-white rounded-2xl p-4 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2">
-              <CheckCircle2 size={16} /> Allowed
+              <CheckCircle size={16} /> Allowed
             </button>
             <button onClick={() => simulate('overscope')} className="bg-rose-600 text-white rounded-2xl p-4 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2">
               <AlertTriangle size={16} /> Over-scope
