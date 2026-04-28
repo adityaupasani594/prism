@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:async';
 import '../app_routes.dart';
 import '../../services/api_service.dart';
 
@@ -80,14 +81,15 @@ class _CreateIdentityScreenState extends State<CreateIdentityScreen> {
     });
 
     try {
-      await ApiService().onboardUser(_demoDid);
+      await ApiService().onboardUser(_demoDid).timeout(const Duration(seconds: 3));
+      if (!mounted) return;
+      Navigator.pushNamed(context, AppRoutes.onboardingSecured);
+    } on TimeoutException {
       if (!mounted) return;
       Navigator.pushNamed(context, AppRoutes.onboardingSecured);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Onboarding failed: $e')),
-      );
+      Navigator.pushNamed(context, AppRoutes.onboardingSecured);
     } finally {
       if (!mounted) return;
       setState(() {
@@ -148,7 +150,7 @@ class _CreateIdentityScreenState extends State<CreateIdentityScreen> {
               ),
               const SizedBox(height: 24),
               Text(
-                'Create Your Secure Identity',
+                'Create Your Demo Identity',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.w800,
@@ -157,7 +159,7 @@ class _CreateIdentityScreenState extends State<CreateIdentityScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Complete your biometric-linked digital profile to unlock institutional-grade financial services.',
+                'Generate a PRISM digital ID for the MVP demo. Document upload is optional and only used to show future verification.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -181,7 +183,7 @@ class _CreateIdentityScreenState extends State<CreateIdentityScreen> {
                 context,
                 icon: Icons.badge,
                 title: 'Upload Aadhaar',
-                subtitle: 'Securely verify your residence and identity using UIDAI.',
+                subtitle: 'Optional demo step for future verified credentials. Do not upload real documents for the MVP video.',
                 onTap: () {
                   _scanIdentityDocument('Aadhaar');
                 },
@@ -191,7 +193,7 @@ class _CreateIdentityScreenState extends State<CreateIdentityScreen> {
                 context,
                 icon: Icons.credit_card,
                 title: 'Upload PAN',
-                subtitle: 'Tax verification for seamless high-value transactions.',
+                subtitle: 'Optional demo step for future KYC proof. The MVP can generate a demo ID without this.',
                 onTap: () {
                   _scanIdentityDocument('PAN');
                 },
@@ -241,7 +243,7 @@ class _CreateIdentityScreenState extends State<CreateIdentityScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: Text(
-                        'Your documents are processed in a local secure enclave and never stored on our central servers in raw format.',
+                        'For the hackathon MVP, you can generate a demo digital ID without uploading Aadhaar, PAN, or any real document.',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
@@ -258,7 +260,7 @@ class _CreateIdentityScreenState extends State<CreateIdentityScreen> {
                 child: ElevatedButton.icon(
                   onPressed: _isOnboarding ? null : _onboardAndGenerateIdentity,
                   icon: const Icon(Icons.fingerprint),
-                  label: Text(_isOnboarding ? 'Generating...' : 'Generate Digital ID'),
+                  label: Text(_isOnboarding ? 'Generating demo ID...' : 'Generate Demo Digital ID'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     backgroundColor: Theme.of(context).colorScheme.primary,
