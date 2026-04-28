@@ -1,5 +1,6 @@
 import React from 'react';
 import Compliance from './components/dashboard/Compliance';
+import Providers from './components/dashboard/Providers';
 import Shield from './components/dashboard/Shield';
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
   const renderContent = () => {
     switch (activeTab) {
       case 'Access Governance': return <Shield />;
+      case 'Consent Providers': return <Providers />;
       case 'Compliance': return <Compliance />;
       default: return <Shield />;
     }
@@ -26,7 +28,7 @@ function App() {
           </div>
           
           <div className="flex gap-7 text-sm font-bold text-slate-400">
-            {['Access Governance', 'Compliance'].map((tab) => (
+            {['Access Governance', 'Consent Providers', 'Compliance'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}

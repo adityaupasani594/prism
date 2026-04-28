@@ -463,6 +463,89 @@ async def get_shield_audit_log(
         query = query.filter(models.AccessEvent.user_did == did)
     return query.order_by(models.AccessEvent.created_at.desc()).limit(limit).all()
 
+@app.get("/api/v1/enterprise/consent-providers", response_model=schemas.EnterpriseConsentProvidersResponse)
+async def get_enterprise_consent_providers(
+    requester_name: str | None = None,
+    db: Session = Depends(get_db),
+):
+    query = db.query(models.Consent).filter(models.Consent.status == models.ConsentStatus.ACTIVE)
+    if requester_name:
+        query = query.filter(models.Consent.requester_name == requester_name)
+
+    consents = query.order_by(models.Consent.created_at.desc()).all()
+    providers = []
+    cohort_map: dict[tuple[str, str, str], dict] = {}
+
+    for consent in consents:
+        fields = _extract_allowed_fields(consent)
+        disclosure_mode = consent.disclosure_mode or "verified_proof"
+        requester = consent.requester_name or "Enterprise Partner"
+        region = consent.region or "India"
+
+        if disclosure_mode == "regional_anonymized":
+            key = (requester, region, disclosure_mode)
+            cohort = cohort_map.setdefault(
+                key,
+                {
+                    "requester_name": requester,
+                    "region": region,
+                    "disclosure_mode": disclosure_mode,
+                    "consent_count": 0,
+                    "minimum_cohort_size": consent.minimum_cohort_size or 100,
+                    "approved_fields": set(),
+                },
+            )
+            cohort["consent_count"] += 1
+            cohort["minimum_cohort_size"] = max(
+                cohort["minimum_cohort_size"],
+                consent.minimum_cohort_size or 100,
+            )
+            cohort["approved_fields"].update(fields)
+            continue
+
+        providers.append(
+            {
+                "consent_id": consent.id,
+                "user_did": consent.user_did,
+                "requester_name": requester,
+                "purpose": consent.purpose or consent.purpose_tag,
+                "disclosure_mode": disclosure_mode,
+                "region": region,
+                "approved_fields": fields,
+                "credit_offer": consent.credit_offer,
+                "expires_at": consent.expiry_timestamp,
+                "status": consent.status,
+                "created_at": consent.created_at,
+            }
+        )
+
+    regional_cohorts = []
+    for cohort in cohort_map.values():
+        is_available = cohort["consent_count"] >= cohort["minimum_cohort_size"]
+        regional_cohorts.append(
+            {
+                "requester_name": cohort["requester_name"],
+                "region": cohort["region"],
+                "disclosure_mode": cohort["disclosure_mode"],
+                "consent_count": cohort["consent_count"],
+                "minimum_cohort_size": cohort["minimum_cohort_size"],
+                "status": "available" if is_available else "building_cohort",
+                "approved_fields": sorted(cohort["approved_fields"]),
+                "insight": {
+                    "privacy_note": "Only aggregate regional insight is visible. Individual users are hidden.",
+                    "release_state": "threshold_met" if is_available else "waiting_for_more_consents",
+                },
+            }
+        )
+
+    return {
+        "total_active_consents": len(consents),
+        "identifiable_provider_count": len(providers),
+        "anonymous_cohort_count": len(regional_cohorts),
+        "providers": providers,
+        "regional_cohorts": regional_cohorts,
+    }
+
 @app.post("/api/v1/privacy/regional-insight", response_model=schemas.RegionalInsightResponse)
 async def get_regional_insight(
     payload: schemas.RegionalInsightRequest,

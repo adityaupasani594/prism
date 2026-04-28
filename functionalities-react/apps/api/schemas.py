@@ -133,3 +133,33 @@ class RegionalInsightResponse(BaseModel):
     minimum_cohort_size: int
     insight: Dict[str, Any] = {}
     reason: Optional[str] = None
+
+class EnterpriseConsentProvider(BaseModel):
+    consent_id: UUID
+    user_did: str
+    requester_name: Optional[str] = None
+    purpose: Optional[str] = None
+    disclosure_mode: str
+    region: Optional[str] = None
+    approved_fields: List[str] = []
+    credit_offer: Optional[str] = None
+    expires_at: datetime
+    status: str
+    created_at: datetime
+
+class EnterpriseRegionalCohort(BaseModel):
+    requester_name: str
+    region: str
+    disclosure_mode: str
+    consent_count: int
+    minimum_cohort_size: int
+    status: str
+    approved_fields: List[str] = []
+    insight: Dict[str, Any] = {}
+
+class EnterpriseConsentProvidersResponse(BaseModel):
+    total_active_consents: int
+    identifiable_provider_count: int
+    anonymous_cohort_count: int
+    providers: List[EnterpriseConsentProvider] = []
+    regional_cohorts: List[EnterpriseRegionalCohort] = []
