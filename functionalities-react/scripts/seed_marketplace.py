@@ -1,9 +1,9 @@
 import os
 import sys
 
-# Force local port for the seed script when using the bundled Docker setup.
-os.environ["DB_PORT"] = "5433"
-os.environ["DB_HOST"] = "localhost"
+# Default to the local Docker port, but respect explicit .env/session values.
+os.environ.setdefault("DB_PORT", "5433")
+os.environ.setdefault("DB_HOST", "localhost")
 
 # Add the apps/api directory to sys.path to import local modules.
 sys.path.append(os.path.join(os.path.dirname(__file__), "../apps/api"))
@@ -17,10 +17,6 @@ def seed():
 
     db = SessionLocal()
     try:
-        if db.query(models.DataRequest).first():
-            print("Consent Exchange already has data. Skipping seed.")
-            return
-
         sample_requests = [
             {
                 "requester_name": "Tesla India",
@@ -84,11 +80,24 @@ def seed():
             },
         ]
 
+        created = 0
+        updated = 0
         for request in sample_requests:
-            db.add(models.DataRequest(**request))
+            existing = db.query(models.DataRequest).filter(
+                models.DataRequest.title == request["title"],
+                models.DataRequest.requester_name == request["requester_name"],
+            ).first()
+
+            if existing:
+                for key, value in request.items():
+                    setattr(existing, key, value)
+                updated += 1
+            else:
+                db.add(models.DataRequest(**request))
+                created += 1
 
         db.commit()
-        print("Consent Exchange successfully seeded with 3 sample requests.")
+        print(f"Consent Exchange seed complete. Created {created}, updated {updated}.")
     except Exception as exc:
         print(f"Error seeding data: {exc}")
         db.rollback()

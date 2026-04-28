@@ -3,8 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
+  static const String _configuredBaseUrl =
+      String.fromEnvironment('PRISM_API_BASE_URL');
+
   // Android emulator cannot access host localhost via 127.0.0.1.
   static String get baseUrl {
+    if (_configuredBaseUrl.isNotEmpty) {
+      return _configuredBaseUrl;
+    }
     if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
       return 'http://10.0.2.2:8000/api/v1';
     }
