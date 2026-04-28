@@ -72,7 +72,7 @@ class ApiService {
   // 5. Get Marketplace Requests
   Future<List<dynamic>> getMarketplaceRequests() async {
     final response = await http.get(
-      Uri.parse('$baseUrl/marketplace/requests'),
+      Uri.parse('$baseUrl/consent-exchange/requests'),
     ).timeout(const Duration(seconds: 12));
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
@@ -93,17 +93,60 @@ class ApiService {
     required String requestId,
     required String userDid,
     required Map<String, dynamic> providedData,
+    String disclosureMode = 'regional_anonymized',
+    Map<String, dynamic> requestedScope = const {},
   }) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/marketplace/respond'),
+      Uri.parse('$baseUrl/consent-exchange/respond'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'request_id': requestId,
         'user_did': userDid,
         'provided_data': providedData,
+        'disclosure_mode': disclosureMode,
+        'requested_scope': requestedScope,
       }),
     );
     return _processResponse(response);
+  }
+
+  Future<Map<String, dynamic>> checkShieldAccess({
+    required String userDid,
+    required String consentId,
+    required String requesterName,
+    required String purpose,
+    required List<String> requestedFields,
+    required String resource,
+    String toolName = 'Enterprise AI Connector',
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/shield/access-check'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'user_did': userDid,
+        'consent_id': consentId,
+        'requester_name': requesterName,
+        'purpose': purpose,
+        'requested_fields': requestedFields,
+        'resource': resource,
+        'tool_name': toolName,
+      }),
+    );
+    return _processResponse(response);
+  }
+
+  Future<List<dynamic>> getShieldAuditLog(String did) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/shield/audit-log?did=$did'),
+    );
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body);
+      if (decoded is List<dynamic>) {
+        return decoded;
+      }
+      throw Exception('Unexpected audit log response shape');
+    }
+    throw Exception('Failed to load Shield audit log: ${response.statusCode}');
   }
 
   // 7. Wallet Status

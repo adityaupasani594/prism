@@ -44,8 +44,8 @@ class BottomNavBar extends StatelessWidget {
               children: [
                 _buildNavItem(context, 0, Icons.fingerprint, 'Identity'),
                 _buildNavItem(context, 1, Icons.fact_check, 'Consent'),
-                _buildNavItem(context, 2, Icons.storefront, 'Marketplace'),
-                _buildNavItem(context, 3, Icons.shield, 'Security'),
+                _buildNavItem(context, 2, Icons.hub, 'Exchange'),
+                _buildNavItem(context, 3, Icons.admin_panel_settings, 'Shield'),
               ],
             ),
           ),

@@ -3,7 +3,7 @@ import '../widgets/bottom_nav_bar.dart';
 import 'consent_request_screen.dart';
 import 'data_marketplace_screen.dart';
 import 'identity_wallet_screen.dart';
-import 'privacy_dashboard_screen.dart';
+import 'prism_shield_screen.dart';
 
 class MainShell extends StatefulWidget {
   final int initialIndex;
@@ -20,7 +20,7 @@ class _MainShellState extends State<MainShell> {
     const IdentityWalletScreen(),
     const ConsentRequestScreen(),
     const DataMarketplaceScreen(),
-    const PrivacyDashboardScreen(),
+    const PrismShieldScreen(),
   ];
 
   int _clampIndex(int index) {
